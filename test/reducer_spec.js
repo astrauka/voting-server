@@ -18,7 +18,8 @@ describe('reducer', () => {
     const action = {type: 'SET_ENTRIES', entries: ['Trainspotting']};
     const nextState = reducer(undefined, action);
     expect(nextState).to.equal(fromJS({
-      entries: ['Trainspotting']
+      entries: ['Trainspotting'],
+      round: 1,
     }));
   });
 
@@ -33,7 +34,8 @@ describe('reducer', () => {
       vote: {
         pair: ['Trainspotting', '28 Days Later']
       },
-      entries: []
+      entries: [],
+      round: 2,
     }));
   });
 
@@ -65,7 +67,8 @@ describe('reducer', () => {
     ];
     const finalState = actions.reduce(reducer, Map());
     expect(finalState).to.equal(fromJS({
-      winner: 'Trainspotting'
+      winner: 'Trainspotting',
+      round: 3,
     }));
   });
 });

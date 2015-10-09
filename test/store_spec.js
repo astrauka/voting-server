@@ -7,7 +7,7 @@ describe('makeStore', () => {
   it('is a redux store', () => {
     const store = makeStore();
     const entries = List.of('Trainspotting', '28');
-    expect(store.getState()).to.equal(Map());
+    expect(store.getState()).to.equal(Map({round: 1}));
 
     store.dispatch({
       type: 'SET_ENTRIES',
@@ -15,7 +15,8 @@ describe('makeStore', () => {
     });
 
     expect(store.getState()).to.equal(fromJS({
-      entries: entries
+      entries: entries,
+      round: 1,
     }));
   });
 });

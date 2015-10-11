@@ -1,4 +1,4 @@
-import {List, Map} from 'immutable';
+import {List, Map, fromJS} from 'immutable';
 import {expect} from 'chai';
 
 import {setEntries, next, vote} from '../src/core';
@@ -97,34 +97,43 @@ describe('application logic', () => {
       const state = Map({
         pair: List.of('Trainspotting', '28 Days Later'),
       });
-      const nextState = vote(state, 'Trainspotting');
+      const nextState = vote(state, 'Trainspotting', 'voter1');
 
-      expect(nextState).to.equal(Map({
-        pair: List.of('Trainspotting', '28 Days Later'),
-        tally: Map({
-          'Trainspotting': 1,
-        }),
+      expect(nextState).to.equal(fromJS({
+        pair: ['Trainspotting', '28 Days Later'],
+        tally: {'Trainspotting': 1},
+        votes: {voter1: 'Trainspotting'},
       }));
 
       expect(vote(state, 'Lillehammer')).to.equal(state);
     });
 
-    it('adds to existing tally for the voted entry', () => {
-      const state = Map({
-        pair: List.of('Trainspotting', '28 Days Later'),
-        tally: Map({
+    it('hadles revoting', () => {
+      const state = fromJS({
+        pair: ['Trainspotting', '28 Days Later'],
+        tally: {
           'Trainspotting': 1,
           '28 Days Later': 2,
-        }),
+        },
+        votes: {
+          voter1: 'Trainspotting',
+          voter2: '28 Days Later',
+          voter3: '28 Days Later',
+        },
       });
-      const nextState = vote(state, '28 Days Later');
+      const nextState = vote(state, '28 Days Later', 'voter1');
 
-      expect(nextState).to.equal(Map({
-        pair: List.of('Trainspotting', '28 Days Later'),
-        tally: Map({
-          'Trainspotting': 1,
+      expect(nextState).to.equal(fromJS({
+        pair: ['Trainspotting', '28 Days Later'],
+        tally: {
+          'Trainspotting': 0,
           '28 Days Later': 3,
-        }),
+        },
+        votes: {
+          voter1: '28 Days Later',
+          voter2: '28 Days Later',
+          voter3: '28 Days Later',
+        },
       }));
     });
   });

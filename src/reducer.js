@@ -9,7 +9,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   case 'VOTE':
     return state.update(
       'vote',
-      (voteState => vote(voteState, action.entry))
+      (voteState => vote(voteState, action.entry, action.clientId))
     );
   }
 

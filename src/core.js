@@ -34,14 +34,30 @@ export function next(state) {
   }
 }
 
-export function vote(voteState, entry) {
+function removePreviousVote(voteState, voter) {
+  const previousEntry = voteState.getIn(['votes', voter]);
+  if (previousEntry) {
+    return voteState.updateIn(['tally', previousEntry], t => t - 1)
+                    .removeIn(['votes', voter]);
+  } else {
+    return voteState;
+  }
+}
+
+function addVote(voteState, entry, voter) {
+  return voteState
+    .setIn(['votes', voter], entry)
+    .updateIn(['tally', entry], 0, t => t + 1);
+}
+
+export function vote(voteState, entry, voter) {
   if (!voteState.get('pair').includes(entry)) {
     return voteState;
   }
 
-  return voteState.updateIn(
-    ['tally', entry],
-    0,
-    tally => tally + 1
+  return addVote(
+    removePreviousVote(voteState, voter),
+    entry,
+    voter
   );
 }
